@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Kanji Defense Game</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <canvas id="gameCanvas"></canvas>
+    <div id="ui">
+      <div id="scoreBoard">
+        <p>Score: <span id="score">0</span></p>
+        <p>Cake Pieces: <span id="cakePieces">6</span></p>
+      </div>
+      <form id="inputForm">
+        <input
+          type="text"
+          id="inputField"
+          placeholder="Enter romaji..."
+          autofocus
+          autocomplete="off"
+        />
+      </form>
+      <div id="gameOverScreen" style="display: none">
+        <h2>Game Over</h2>
+        <p>Final Score: <span id="finalScore">0</span></p>
+      </div>
+    </div>
+    <script src="game.js"></script>
+  </body>
+</html>
