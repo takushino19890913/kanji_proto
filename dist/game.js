@@ -73,7 +73,12 @@ function createCakePieces() {
         const angle = (i / numPieces) * Math.PI * 2;
         const x = centerX + Math.cos(angle) * cakeRadius;
         const y = centerY + Math.sin(angle) * cakeRadius;
-        cakePieces.push({ id: i, position: { x, y }, isStolen: false });
+        cakePieces.push({
+            id: i,
+            position: { x, y },
+            isSteeling: false,
+            isStolen: false,
+        });
     }
 }
 // アリの生成
@@ -84,8 +89,19 @@ function createAnt() {
     const speed = Math.random() * 0.5 + 0.5;
     const angle = Math.random() * Math.PI * 2;
     const radius = Math.max(canvas.width, canvas.height);
-    const x = canvas.width / 2 + Math.cos(angle) * radius;
-    const y = canvas.height / 2 + Math.sin(angle) * radius;
+    // アリが出現する範囲を設定
+    // スクリーンの辺上からアリを出現させる
+    let x, y;
+    if (Math.random() < 0.5) {
+        // 左右の辺から出現
+        x = Math.random() < 0.5 ? 0 : canvas.width;
+        y = Math.random() * canvas.height;
+    }
+    else {
+        // 上下の辺から出現
+        x = Math.random() * canvas.width;
+        y = Math.random() < 0.5 ? 0 : canvas.height;
+    }
     // ランダムな漢字を選択
     const randomKanji = kanjiList[Math.floor(Math.random() * kanjiList.length)];
     // 利用可能なケーキピースを探す
@@ -135,6 +151,12 @@ function update() {
             case "approaching":
                 // ターゲットに向かって移動
                 if (ant.targetPosition) {
+                    //target positionの更新
+                    const piece = cakePieces.find((p) => p.id === ant.targetPieceId);
+                    if (piece) {
+                        ant.targetPosition.x = piece.position.x;
+                        ant.targetPosition.y = piece.position.y;
+                    }
                     const dx = ant.targetPosition.x - ant.position.x;
                     const dy = ant.targetPosition.y - ant.position.y;
                     const distance = Math.sqrt(dx * dx + dy * dy);
@@ -157,9 +179,7 @@ function update() {
                     ant.carryingPiece = true;
                     const piece = cakePieces.find((p) => p.id === ant.targetPieceId);
                     if (piece) {
-                        piece.isStolen = true;
-                        updateCakePiecesDisplay();
-                        checkGameOver();
+                        piece.isSteeling = true;
                     }
                 }
                 break;
@@ -175,12 +195,26 @@ function update() {
                     ant.position.x > canvas.width ||
                     ant.position.y < 0 ||
                     ant.position.y > canvas.height) {
+                    const piece = cakePieces.find((p) => p.id === ant.targetPieceId);
+                    if (piece) {
+                        piece.isStolen = true;
+                        updateCakePiecesDisplay();
+                        checkGameOver();
+                    }
                     return false;
                 }
                 break;
         }
         return true;
     });
+}
+// ケーキピースの状態を更新
+function updateCakePieceState(id, x, y) {
+    const piece = cakePieces.find((p) => p.id === id);
+    if (piece) {
+        piece.position.x = x;
+        piece.position.y = y;
+    }
 }
 // ゲーム画面の描画
 function draw() {
@@ -191,7 +225,7 @@ function draw() {
     const centerY = canvas.height / 2;
     // ケーキの描画
     for (const piece of cakePieces) {
-        if (!piece.isStolen) {
+        if (!piece.isSteeling) {
             drawCakePiece(piece.id, centerX, centerY, cakeRadius);
         }
     }
@@ -205,6 +239,7 @@ function draw() {
             const pieceOffsetX = Math.cos(pieceAngle) * cakeRadius;
             const pieceOffsetY = Math.sin(pieceAngle) * cakeRadius;
             drawCakePiece(ant.targetPieceId, contactX - pieceOffsetX, contactY - pieceOffsetY, cakeRadius);
+            updateCakePieceState(ant.targetPieceId, contactX - pieceOffsetX, contactY - pieceOffsetY);
         }
         // アリの体の描画
         ctx.fillStyle = "#0000ff";
