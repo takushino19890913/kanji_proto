@@ -1,3 +1,4 @@
+
 body,
 html {
   margin: 0;
@@ -5,9 +6,8 @@ html {
   overflow: hidden;
 }
 
-#gameCanvas {
+canvas {
   display: block;
-  background-color: #202020;
 }
 
 #ui {
@@ -15,11 +15,13 @@ html {
   top: 0;
   left: 0;
   width: 100%;
+  pointer-events: none; /* UI以外のクリックを可能にする */
 }
 
 #scoreBoard {
   color: white;
   padding: 10px;
+  pointer-events: auto; /* スコアボードの操作を可能にする */
 }
 
 #inputForm {
@@ -27,6 +29,7 @@ html {
   bottom: 0;
   width: 100%;
   padding: 10px;
+  pointer-events: auto; /* 入力フォームの操作を可能にする */
 }
 
 #inputField {
@@ -47,4 +50,5 @@ html {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  pointer-events: auto; /* ゲームオーバースクリーンの操作を可能にする */
 }

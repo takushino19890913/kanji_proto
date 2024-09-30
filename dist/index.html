@@ -1,12 +1,24 @@
+<!DOCTYPE html
 <!DOCTYPE html>
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
-    <title>Kanji Defense Game</title>
+    <title>Kanji Defense Game 3D</title>
     <link rel="stylesheet" href="styles.css" />
+    <!-- Three.jsをモジュールとして読み込む -->
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.152.2/build/three.module.js",
+          "GLTFLoader": "https://unpkg.com/three@0.152.2/examples/jsm/loaders/GLTFLoader.js",
+          "CSG": "https://unpkg.com/three-csg-ts@latest/build/three-csg-ts.module.js"
+        }
+      }
+    </script>
+    <!-- ゲームのスクリプトをモジュールとして読み込む -->
+    <script type="module" src="game.js"></script>
   </head>
   <body>
-    <canvas id="gameCanvas"></canvas>
     <div id="ui">
       <div id="scoreBoard">
         <p>Score: <span id="score">0</span></p>
@@ -26,6 +38,5 @@
         <p>Final Score: <span id="finalScore">0</span></p>
       </div>
     </div>
-    <script src="game.js"></script>
   </body>
 </html>
